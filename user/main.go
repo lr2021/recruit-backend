@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/lr2021/recruit-backend/user/service"
 	"log"
 	"net/http"
 	"os"
@@ -30,13 +31,16 @@ func main(){
 	endpoints := endpoint.Endpoints{
 		Login: endpoint.Login(srv),
 		Register: endpoint.Register(srv),
-		ReadProfile: endpoint.ReadProfile(srv),
-		UpdateProfile: endpoint.UpdateProfile(srv),
+		Logout: endpoint.Logout(srv),
+		GetUserInformation: endpoint.GetUserInformation(srv),
+		GetUserSolves: endpoint.GetUserSolves(srv),
+		UpdateUserProfile: endpoint.UpdateUserProfile(srv),
+		GetAllUserProfile: endpoint.GetAllUserProfile(srv),
 	}
 
 	go func(){
 		log.Println("user service is running on port: ", *addr)
-		db.Init()
+		// TODO: check if database is ready
 		handler := NewHTTPServer(ctx, endpoints)
 		errChan <- http.ListenAndServe(*addr, handler)
 	}()

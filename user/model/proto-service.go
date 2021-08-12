@@ -13,43 +13,43 @@ type User struct {
 	Img      string `json:"img"`
 }
 
-type AddRequest struct {
+type AddUserRequest struct {
 	User *User `json:"user"`
 }
 
-type AddResponse struct {
+type AddUserResponse struct {
 	Uid    string `json:"uid"`
 	Status int32  `json:"status"`
 	Msg    string `json:"msg"`
 }
 
-type InspectRequest struct {
+type InspectUserRequest struct {
 	Uid      string `json:"uid"`
 	Tel      string `json:"tel"`
 	Password string `json:"password"`
 }
 
-type InspectResponse struct {
+type InspectUserResponse struct {
 	User   *User  `json:"user"`
 	Msg    string `json:"msg"`
 	Status int32  `json:"status"`
 }
 
-type UpdateRequest struct {
+type UpdateUserRequest struct {
 	User *User `json:"user"`
 }
 
-type UpdateResponse struct {
+type UpdateUserResponse struct {
 	Status int32  `json:"status"`
 	Msg    string `json:"msg"`
 }
 
-type DeleteRequest struct {
+type DeleteUserRequest struct {
 	Uid string `json:"uid"`
 	Tel string `json:"tel"`
 }
 
-type DeleteResponse struct {
+type DeleteUserResponse struct {
 	Status int32  `json:"status"`
 	Msg    string `json:"msg"`
 }
