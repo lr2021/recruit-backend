@@ -9,10 +9,10 @@ type Endpoints struct {
 	Login endpoint.Endpoint
 	Register endpoint.Endpoint
 	Logout endpoint.Endpoint
-	GetUserInformation endpoint.Endpoint
-	GetUserSolves endpoint.Endpoint
+	GetUserProfile endpoint.Endpoint
+	GetUserSolved endpoint.Endpoint
 	UpdateUserProfile endpoint.Endpoint
-	GetAllUserProfile endpoint.Endpoint
+	GetUserRank endpoint.Endpoint
 }
 
 func Login(userService service.IUserService) endpoint.Endpoint {
@@ -27,11 +27,7 @@ func Logout(UserService service.IUserService) endpoint.Endpoint {
 	return nil
 }
 
-func GetUserInformation(userService service.IUserService) endpoint.Endpoint {
-	return nil
-}
-
-func GetUserSolves(userService service.IUserService) endpoint.Endpoint {
+func GetUserProfile(userService service.IUserService) endpoint.Endpoint {
 	return nil
 }
 
@@ -39,6 +35,10 @@ func UpdateUserProfile(userService service.IUserService) endpoint.Endpoint {
 	return nil
 }
 
-func GetAllUserProfile(userService service.IUserService) endpoint.Endpoint {
+func GetUserSolved(userService service.IUserService) endpoint.Endpoint {
+	return nil
+}
+
+func GetUserRank(userService service.IUserService) endpoint.Endpoint {
 	return nil
 }

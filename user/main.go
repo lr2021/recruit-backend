@@ -32,10 +32,10 @@ func main(){
 		Login: endpoint.Login(srv),
 		Register: endpoint.Register(srv),
 		Logout: endpoint.Logout(srv),
-		GetUserInformation: endpoint.GetUserInformation(srv),
-		GetUserSolves: endpoint.GetUserSolves(srv),
+		GetUserProfile: endpoint.GetUserProfile(srv),
+		GetUserSolved: endpoint.GetUserSolved(srv),
 		UpdateUserProfile: endpoint.UpdateUserProfile(srv),
-		GetAllUserProfile: endpoint.GetAllUserProfile(srv),
+		GetUserRank: endpoint.GetUserRank(srv),
 	}
 
 	go func(){

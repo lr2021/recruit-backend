@@ -27,22 +27,17 @@ func NewHTTPServer(ctx context.Context, endpoints endpoint.Endpoints) http.Handl
 	))
 	s.Methods("POST").Path("/logout").Handler(httptransport.NewServer(
 		endpoints.Logout,
-		transport.DecodeReadProfileRequest,
+		transport.DecodeLogoutRequest,
 		transport.Encode,
 	))
-	s.Methods("GET").Path("/userInformation").Handler(httptransport.NewServer(
-		endpoints.GetUserInformation,
-		transport.DecodeUpdateProfileRequest,
+	s.Methods("GET").Path("/userSolved").Handler(httptransport.NewServer(
+		endpoints.GetUserSolved,
+		transport.DecodeGetUserSolvedRequest,
 		transport.Encode,
-	))
-	s.Methods("GET").Path("/userSolves").Handler(httptransport.NewServer(
-		endpoints.GetUserSolves,
-		transport.DecodeGetUserSolvesRequest,
-		transport.Encode,
-	))
-	s.Methods("GET").Path("/allProfile").Handler(httptransport.NewServer(
-		endpoints.GetAllUserProfile,
-		transport.DecodeGetAllProfileRequest,
+		))
+	s.Methods("GET").Path("/userProfile").Handler(httptransport.NewServer(
+		endpoints.GetUserProfile,
+		transport.DecodeGetUserProfileRequest,
 		transport.Encode,
 	))
 	s.Methods("PUT").Path("/userProfile").Handler(httptransport.NewServer(
@@ -50,6 +45,12 @@ func NewHTTPServer(ctx context.Context, endpoints endpoint.Endpoints) http.Handl
 		transport.DecodeUpdateUserProfileRequest,
 		transport.Encode,
 	))
+	s.Methods("GEt").Path("/rank").Handler(httptransport.NewServer(
+		endpoints.GetUserRank,
+		transport.DecodeGetUserRankRequest,
+		transport.Encode,
+	))
+
 	return r
 }
 
