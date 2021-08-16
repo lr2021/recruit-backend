@@ -3,6 +3,8 @@ package endpoint
 import (
 	"context"
 	"github.com/go-kit/kit/endpoint"
+	"github.com/lr2021/recruit-backend/auth"
+	"github.com/lr2021/recruit-backend/general/errors"
 	"github.com/lr2021/recruit-backend/user/model"
 	"github.com/lr2021/recruit-backend/user/service"
 	"github.com/lr2021/recruit-backend/utils"
@@ -20,9 +22,28 @@ type Endpoints struct {
 
 func Login(userService service.IUserService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
-		req :=request.(model.LoginRequest)
+		req := request.(model.LoginRequest)
+		rsp := response.(model.LoginResponse)
 		req.Password = utils.Md5(req.Password)
-		return nil, nil
+		if err := auth.CheckReCaptcha(req.Token); err != nil {
+			return nil, err
+		}
+		response, err = userService.InspectUser(model.InspectUserRequest{
+			Username: req.Username,
+			Tel:      req.Tel,
+			Password: req.Password,
+		})
+		if err != nil {
+			return nil, err
+		}
+		if response == nil {
+			return nil, errors.Forbidden("user:login:999", "invalid username or password")
+		}
+		rsp.Username = req.Username
+		rsp.Status = 200
+		rsp.Msg = "success"
+		// rsp.Token = auth.GenerateToken
+		return rsp, nil
 	}
 }
 

@@ -39,6 +39,7 @@ type LoginRequest struct {
 	Username       string `json:"username"`
 	Password       string `json:"password"`
 	ValidationCode string `json:"validationCode"`
+	Token		   string `json:"token"`
 }
 
 type LoginResponse struct {
@@ -56,6 +57,7 @@ type RegisterRequest struct {
 	RepeatedPassword string `json:"repeatedPassword"`
 	Grade            int    `json:"grade"`
 	ValidationCode   string `json:"validationCode"`
+	Token			 string `json:"token"`
 }
 
 type RegisterResponse struct {

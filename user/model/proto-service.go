@@ -24,8 +24,8 @@ type AddUserResponse struct {
 }
 
 type InspectUserRequest struct {
-	Uid      string `json:"uid"`
 	Tel      string `json:"tel"`
+	Username string  `json:"username"`
 	Password string `json:"password"`
 }
 
