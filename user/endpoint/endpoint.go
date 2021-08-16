@@ -1,8 +1,11 @@
 package endpoint
 
 import (
+	"context"
 	"github.com/go-kit/kit/endpoint"
+	"github.com/lr2021/recruit-backend/user/model"
 	"github.com/lr2021/recruit-backend/user/service"
+	"github.com/lr2021/recruit-backend/utils"
 )
 
 type Endpoints struct {
@@ -16,7 +19,9 @@ type Endpoints struct {
 }
 
 func Login(userService service.IUserService) endpoint.Endpoint {
-	return nil
+	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+		req :=request.(model.LoginRequest)
+	}
 }
 
 func Register(userService service.IUserService) endpoint.Endpoint {

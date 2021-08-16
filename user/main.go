@@ -18,7 +18,6 @@ func main(){
 	flag.Parse()
 
 	ctx := context.Background()
-
 	srv := service.NewService()
 	errChan := make(chan error)
 
