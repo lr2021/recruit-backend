@@ -1,4 +1,4 @@
-package db
+package mysql
 
 import (
 	"database/sql"
@@ -30,12 +30,20 @@ func Init() {
 
 	db, err = sql.Open("mysql", "lrstudio:tF#262420228@tcp(127.0.0.1:3306)/lrstudio?charset=utf8")
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err.Error())
+		return
 	}
 	db.SetMaxIdleConns(20)
 	db.SetMaxOpenConns(100)
 	db.SetConnMaxLifetime(time.Hour)
 	inited = true
+}
+
+func HasInit() bool {
+	if inited {
+		return true
+	}
+	return false
 }
 
 func GetDB() *sql.DB {

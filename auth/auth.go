@@ -60,6 +60,7 @@ func GenerateToken(username string) string {
 		fmt.Println(err)
 	}
 	fmt.Printf("token: %v\n", token)
+
 	return token
 }
 

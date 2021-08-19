@@ -4,13 +4,13 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/lr2021/recruit-backend/user/endpoint"
 	"github.com/lr2021/recruit-backend/user/service"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
-	"github.com/lr2021/recruit-backend/user/endpoint"
 )
 
 func main(){
@@ -40,6 +40,7 @@ func main(){
 	go func(){
 		log.Println("user service is running on port: ", *addr)
 		// TODO: check if database is ready
+
 		handler := NewHTTPServer(ctx, endpoints)
 		errChan <- http.ListenAndServe(*addr, handler)
 	}()

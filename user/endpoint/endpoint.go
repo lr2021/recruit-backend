@@ -37,12 +37,12 @@ func Login(userService service.IUserService) endpoint.Endpoint {
 			return nil, err
 		}
 		if response == nil {
-			return nil, errors.Forbidden("user:login:999", "invalid username or password")
+			return nil, errors.Forbidden("user:login:001", "invalid username or password")
 		}
 		rsp.Username = req.Username
 		rsp.Status = 200
 		rsp.Msg = "success"
-		// rsp.Token = auth.GenerateToken
+		rsp.Token = auth.GenerateToken(req.Username)
 		return rsp, nil
 	}
 }
