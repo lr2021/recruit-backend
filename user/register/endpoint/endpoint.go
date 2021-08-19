@@ -5,8 +5,8 @@ import (
 	"github.com/go-kit/kit/endpoint"
 	"github.com/lr2021/recruit-backend/auth"
 	"github.com/lr2021/recruit-backend/general/errors"
-	"github.com/lr2021/recruit-backend/user/model"
-	"github.com/lr2021/recruit-backend/user/service"
+	"github.com/lr2021/recruit-backend/user/register/model"
+	"github.com/lr2021/recruit-backend/user/register/service"
 	"github.com/lr2021/recruit-backend/utils"
 )
 
@@ -18,6 +18,7 @@ type Endpoints struct {
 	GetUserSolved endpoint.Endpoint
 	UpdateUserProfile endpoint.Endpoint
 	GetUserRank endpoint.Endpoint
+	HealthCheck endpoint.Endpoint
 }
 
 func Login(userService service.IUserService) endpoint.Endpoint {
@@ -69,4 +70,11 @@ func GetUserSolved(userService service.IUserService) endpoint.Endpoint {
 
 func GetUserRank(userService service.IUserService) endpoint.Endpoint {
 	return nil
+}
+
+func HealthCheck(userService service.IUserService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+		status, _ := userService.HealthCheck(model.ServiceHealthCheckRequest{})
+		return model.HealthResponse{Health: status.Health}, nil
+	}
 }

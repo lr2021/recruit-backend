@@ -123,3 +123,10 @@ type GetUserRankResponse struct {
 	Field    string `json:"field"`
 	Rank     int32  `json:"rank"`
 }
+
+type HealthRequest struct {
+}
+
+type HealthResponse struct {
+	Health bool `json:"health"`
+}

@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/lr2021/recruit-backend/general/errors"
-	"github.com/lr2021/recruit-backend/user/model"
+	"github.com/lr2021/recruit-backend/user/register/model"
 	"net/http"
 )
 
@@ -65,6 +65,15 @@ func DecodeUpdateUserProfileRequest(ctx context.Context, r *http.Request) (inter
 
 func DecodeGetUserRankRequest(ctx context.Context, r *http.Request) (interface{}, error) {
 	var req model.UpdateUserProfileRequest
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		return nil, errors.BadRequest("para:001", "missing or invalid parameters")
+	}
+	return req, nil
+}
+
+func DecodeHealthCheckRequest(ctx context.Context, r *http.Request) (interface{}, error) {
+	var req model.HealthRequest
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		return nil, errors.BadRequest("para:001", "missing or invalid parameters")

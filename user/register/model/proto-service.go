@@ -54,5 +54,9 @@ type DeleteUserResponse struct {
 	Msg    string `json:"msg"`
 }
 
+type ServiceHealthCheckRequest struct {
+}
 
-
+type ServiceHealthCheckResponse struct {
+	Health bool `json:"health"`
+}
