@@ -7,22 +7,16 @@ import (
 	"github.com/go-kit/kit/sd"
 	"github.com/go-kit/kit/sd/consul"
 	"github.com/go-kit/kit/sd/lb"
-	httptransport "github.com/go-kit/kit/transport/http"
-	"io"
-	"net/http"
-	"net/url"
+	factory2 "github.com/lr2021/recruit-backend/user/discover/factory"
 	"time"
 )
 
-func encodeRequest(_ context.Context, req *http.Request, r interface{}) error {
-	return nil
+type api struct {
+	method string
+	path string
 }
 
-func decodeResponse(_ context.Context, rsp *http.Response) (interface{}, error) {
-	return rsp.Body, nil
-}
-
-func MakeDiscoverEndpoint(ctx context.Context, client consul.Client, logger log.Logger) endpoint.Endpoint {
+func MakeDiscoverEndpoint(ctx context.Context, client consul.Client, logger log.Logger) map[string]endpoint.Endpoint {
 	serviceName := "lr2021-user"
 	tags := []string{"lr2021", "user"}
 	passingOnly := true
@@ -30,15 +24,24 @@ func MakeDiscoverEndpoint(ctx context.Context, client consul.Client, logger log.
 
 	instancer := consul.NewInstancer(client, logger, serviceName, tags, passingOnly)
 
-	factory := func(instance string) (endpoint.Endpoint, io.Closer, error) {
-		target, _ := url.Parse("http://" + instance)
-		return httptransport.NewClient("", target, encodeRequest, decodeResponse).Endpoint(), nil, nil
+	endpoints := map[string]endpoint.Endpoint{}
+	apis := map[string]api{
+		"Login": {"POST", "/api/user/login"},
+		"Register": {"POST", "/api/user/register"},
+		"Logout": {"POST", "/api/user/logout"},
+		"GetUserSolved": {"GET", "/api/user/userSolved"},
+		"GetUserProfile": {"GET", "/api/user/userProfile"},
+		"UpdateUserProfile": {"PUT", "/api/user/userProfile"},
+		"GetUserRank": {"GET", "/api/user/rank"},
 	}
 
-	endpointer := sd.NewEndpointer(instancer, factory, logger)
+	for c, u := range apis {
+		factory := factory2.UserFactory(ctx, u.path, u.method)
+		endpointer := sd.NewEndpointer(instancer, factory, logger)
+		bl := lb.NewRoundRobin(endpointer)
+		endp := lb.Retry(3, duration, bl)
+		endpoints[c] = endp
+	}
 
-	bl := lb.NewRoundRobin(endpointer)
-	retry := lb.Retry(1, duration, bl)
-
-	return retry
+	return endpoints
 }
