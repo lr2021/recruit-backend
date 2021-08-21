@@ -62,18 +62,8 @@ func DecodeUpdateUserProfileRequest(ctx context.Context, r *http.Request) (inter
 	return req, nil
 }
 
-
 func DecodeGetUserRankRequest(ctx context.Context, r *http.Request) (interface{}, error) {
-	var req model.UpdateUserProfileRequest
-	err := json.NewDecoder(r.Body).Decode(&req)
-	if err != nil {
-		return nil, errors.BadRequest("para:001", "missing or invalid parameters")
-	}
-	return req, nil
-}
-
-func DecodeHealthCheckRequest(ctx context.Context, r *http.Request) (interface{}, error) {
-	var req model.HealthRequest
+	var req model.GetUserRankRequest
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		return nil, errors.BadRequest("para:001", "missing or invalid parameters")

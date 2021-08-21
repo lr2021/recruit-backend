@@ -25,7 +25,7 @@ func Register(consulHost, consulPort, svcHost, svcPort string, logger log.Logger
 	}
 
 	check := api.AgentServiceCheck{
-		HTTP:     "http://" + svcHost + ":" + svcPort + "/health",
+		HTTP:     "http://" + svcHost + ":" + svcPort + "/api/user/health",
 		Interval: "10s",
 		Timeout:  "1s",
 		Notes:    "Consul check service health status.",

@@ -1,4 +1,4 @@
-package discover
+package main
 
 import (
 	"context"
@@ -13,7 +13,6 @@ func NewHTTPHandler(ctx context.Context, endpoints map[string]endpoint.Endpoint)
 	r := mux.NewRouter()
 
 	s := r.PathPrefix("/api/user").Subrouter()
-
 	s.Methods("POST").Path("/login").Handler(httptransport.NewServer(
 		endpoints["Login"],
 		transport.DecodeLoginRequest,

@@ -2,23 +2,27 @@ package factory
 
 import (
 	"context"
+	"fmt"
 	"github.com/go-kit/kit/endpoint"
 	"github.com/go-kit/kit/sd"
 	httptransport "github.com/go-kit/kit/transport/http"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
 )
-func encodeRequest(_ context.Context, req *http.Request, r interface{}) error {
-	return nil
-}
 
 func decodeResponse(_ context.Context, rsp *http.Response) (interface{}, error) {
-	return rsp.Body, nil
+	fmt.Println(rsp.Status)
+	response, err := ioutil.ReadAll(rsp.Body)
+	if err != nil {
+		return err.Error(), nil
+	}
+	return string(response[:len(response)-1]), nil
 }
 
-func UserFactory(_ context.Context, method, path string) sd.Factory {
+func UserFactory(_ context.Context, enc httptransport.EncodeRequestFunc, dec httptransport.DecodeResponseFunc, path, method string) sd.Factory {
 	return func(instance string) (endpoint endpoint.Endpoint, closer io.Closer, err error) {
 		if !strings.HasPrefix(instance, "http") {
 			instance = "http://" + instance
@@ -29,6 +33,24 @@ func UserFactory(_ context.Context, method, path string) sd.Factory {
 			return nil, nil, err
 		}
 		target.Path = path
-		return httptransport.NewClient(method, target, encodeRequest, decodeResponse).Endpoint(), nil, nil
+
+		return httptransport.NewClient(method, target, enc, dec).Endpoint(), nil, nil
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

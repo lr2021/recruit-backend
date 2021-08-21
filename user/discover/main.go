@@ -1,4 +1,4 @@
-package discover
+package main
 
 import (
 	"context"

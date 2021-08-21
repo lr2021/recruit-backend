@@ -4,5 +4,6 @@ go 1.15
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/lr2021/recruit-backend/general v0.0.0-20210816082345-8c9d3509c4cb
+	github.com/lr2021/recruit-backend/general v0.0.0-20210819030107-33ab05134310
+	github.com/lr2021/recruit-backend/user/register v0.0.0-20210820035500-8ba0310cbe26
 )

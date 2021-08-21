@@ -23,8 +23,9 @@ type Endpoints struct {
 
 func Login(userService service.IUserService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+		var rsp model.LoginResponse
+
 		req := request.(model.LoginRequest)
-		rsp := response.(model.LoginResponse)
 		req.Password = utils.Md5(req.Password)
 		if err := auth.CheckReCaptcha(req.Token); err != nil {
 			return nil, err
@@ -49,7 +50,14 @@ func Login(userService service.IUserService) endpoint.Endpoint {
 }
 
 func Register(userService service.IUserService) endpoint.Endpoint {
-	return nil
+	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+		var rsp model.RegisterResponse
+
+		req := request.(model.RegisterRequest)
+		req.Password = utils.Md5(req.Password)
+
+		return rsp, err
+	}
 }
 
 func Logout(UserService service.IUserService) endpoint.Endpoint {
@@ -69,7 +77,16 @@ func GetUserSolved(userService service.IUserService) endpoint.Endpoint {
 }
 
 func GetUserRank(userService service.IUserService) endpoint.Endpoint {
-	return nil
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		var rsp model.GetUserRankResponse
+		var err error
+		rsp.Username = "su29029"
+		rsp.Status = 200
+		rsp.Msg = "success"
+		rsp.Field = "web"
+		rsp.Rank = 1
+		return rsp, err
+	}
 }
 
 func HealthCheck(userService service.IUserService) endpoint.Endpoint {

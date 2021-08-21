@@ -18,6 +18,11 @@ type CustomClaims struct {
 	jwt.StandardClaims
 }
 
+func CheckValidation(code string, username string) bool {
+
+	return true
+}
+
 func CheckReCaptcha(token string) error {
 	if token == "" {
 		return errors.Forbidden("auth:001", "invalid token")

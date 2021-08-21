@@ -64,7 +64,7 @@ func main(){
 		}
 		handler := NewHTTPServer(ctx, endpoints)
 		registrar.Register()
-		errChan <- http.ListenAndServe(*servicePort, handler)
+		errChan <- http.ListenAndServe(":" + *servicePort, handler)
 	}()
 
 	fmt.Println(<-errChan)
