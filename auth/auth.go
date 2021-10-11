@@ -18,9 +18,14 @@ type CustomClaims struct {
 	jwt.StandardClaims
 }
 
-func CheckValidation(code string, username string) bool {
+func CheckValidation(code string, tel string, username string) bool {
 
 	return true
+}
+
+func GenerateValidation(tel string, username string) (bool, error) {
+
+	return false, nil
 }
 
 func CheckReCaptcha(token string) error {

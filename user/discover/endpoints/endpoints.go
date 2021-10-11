@@ -59,6 +59,7 @@ func MakeDiscoverEndpoint(ctx context.Context, client consul.Client, logger log.
 		factory := factory2.UserFactory(ctx, encode[c], decode[c], u.path, u.method)
 		endpointer := sd.NewEndpointer(instancer, factory, logger)
 		bl := lb.NewRoundRobin(endpointer)
+		
 		endp := lb.Retry(3, duration, bl)
 		endpoints[c] = endp
 	}

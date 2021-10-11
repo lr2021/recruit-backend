@@ -43,14 +43,32 @@ func CheckRegisterRequest(req model.RegisterRequest) bool {
 }
 
 func CheckLogoutRequest(req model.LogoutRequest) bool {
+	if !regexp.MustCompile(`^[0-9a-zA-Z]{6,20}$`).MatchString(req.Username) {
+		return false
+	}
 	return true
 }
 
 func CheckGetUserSolvedRequest(req model.GetUserSolvedRequest) bool {
+	if !regexp.MustCompile(`^[0-9a-zA-Z]{6,20}$`).MatchString(req.Username) {
+		return false
+	}
 	return true
 }
 
 func CheckGetUserProfileRequest(req model.GetUserProfileRequest) bool {
+	if len(req.Tel) == 0 && len(req.Username) == 0 {
+		return false
+	}
+	if len(req.Username) > 0 && !regexp.MustCompile(`^[0-9a-zA-Z]{6,20}$`).MatchString(req.Username) {
+		return false
+	}
+	if len(req.Tel) > 0 && !regexp.MustCompile(`^((0\d{2,3}-\d{7,8})|(1[358479]\d{9}))$`).MatchString(req.Tel) {
+		return false
+	}
+	if req.Type < 1 || req.Type > 5 {
+		return false
+	}
 	return true
 }
 

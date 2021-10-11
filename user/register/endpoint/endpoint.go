@@ -56,6 +56,7 @@ func Register(userService service.IUserService) endpoint.Endpoint {
 		req := request.(model.RegisterRequest)
 		req.Password = utils.Md5(req.Password)
 
+		
 		return rsp, err
 	}
 }
