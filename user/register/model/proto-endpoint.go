@@ -3,12 +3,10 @@ package model
 type Profile struct {
 	Username  string `json:"username"`
 	Name      string `json:"name"`
+	Password  string `json:"password"`
 	StuNumber string `json:"stuNumber"`
 	Email     string `json:"email"`
 	Tel       string `json:"tel"`
-	Password  string `json:"password"`
-	Sex       int32  `json:"sex"`
-	Age       int32  `json:"age"`
 	Grade     int32  `json:"grade"`
 	QQNumber  string `json:"qqNumber"`
 	Img       string `json:"img"`
@@ -54,7 +52,6 @@ type RegisterRequest struct {
 	StuNumber        string `json:"stuNumber"`
 	Username         string `json:"username"`
 	Password         string `json:"password"`
-	RepeatedPassword string `json:"repeatedPassword"`
 	Grade            int    `json:"grade"`
 	ValidationCode   string `json:"validationCode"`
 	Token			 string `json:"token"`

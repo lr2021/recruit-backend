@@ -3,13 +3,20 @@ package auth
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/aliyun/alibaba-cloud-sdk-go/services/dysmsapi"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/go-gomail/gomail"
 	"github.com/go-redis/redis/v7"
 	"github.com/lr2021/recruit-backend/general"
 	"github.com/lr2021/recruit-backend/general/config"
 	"github.com/lr2021/recruit-backend/general/db/cache"
 	"github.com/lr2021/recruit-backend/general/errors"
-	
+	"github.com/lr2021/recruit-backend/general/mail"
+	"github.com/lr2021/recruit-backend/utils"
+	"log"
+	"math/rand"
+	"strconv"
+
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -22,13 +29,81 @@ type CustomClaims struct {
 }
 
 func CheckValidation(code string, goal string, username string) bool {
-
+	result, err := cache.GetRDB().Get(goal).Result()
+	if err != nil || result != code {
+		return false
+	}
 	return true
 }
 
-func GenerateValidation(goal string, username string, flag int) (bool, error) {
+func GenerateValidation(goal string, username string) (bool, error) {
+	if ok := utils.CheckEmail(goal); ok {
+		code := generateCode()
+		content := fmt.Sprintf("你好%v，欢迎注册凌睿工作室，你的验证码是%v,请在5分钟内完成注册，请勿泄露验证码！", username, code)
+		result, err := cache.GetRDB().Set(goal, code, 300 * time.Second).Result()
+		if err != nil {
+			return false, err
+		}
+		if result == "OK" {
+			res, err := sendEmail(goal, content)
+			return res, err
+		}
+		return false, nil
+	}
+	if ok := utils.CheckPhoneNumber(goal); ok {
+		code := generateCode()
+		content := fmt.Sprintf("你好%v，欢迎注册凌睿工作室，你的验证码是%v,请在5分钟内完成注册，请勿泄露验证码！", username, code)
+		result, err := cache.GetRDB().Set(goal, code, 300 * time.Second).Result()
+		if err != nil {
+			return false, err
+		}
+		if result == "OK" {
+			res, err := sendLetter(goal, content)
+			return res, err
+		}
+		return false, nil
+	}
+	return false, fmt.Errorf("invalid email or phone number")
+}
 
-	return false, nil
+func sendEmail(goal string, content string) (bool, error) {
+	m := gomail.NewMessage()
+	m.SetHeader("From", "recruit@lingruistudio.com")
+	m.SetHeader("To", goal)
+	m.SetHeader("Subject", "凌睿工作室招新平台注册验证邮件")
+	m.SetBody("text/html", content)
+
+	return mail.Send(m)
+}
+
+func sendLetter(goal string, code string) (bool, error) {
+	client, err := dysmsapi.NewClientWithAccessKey(config.ALIYUN_REGION, config.ALIYUN_ACCESS_KEY_ID, config.ALIYUN_ACCESS_KEY_SECRET)
+	if client == nil {
+		return false, err
+	}
+	request := dysmsapi.CreateSendSmsRequest()
+	request.Scheme = "https"
+	request.PhoneNumbers = goal
+	request.SignName = "凌睿工作室"
+	request.TemplateCode = "SMS_195863875"
+	request.TemplateParam = "{\"code\":\"" + code + "\"}"
+	response, err := client.SendSms(request)
+	if err != nil {
+		return false, err
+	}
+
+	log.Println(response.Code)
+	if response.Code != "OK" {
+		return false, fmt.Errorf("%v", response.Code)
+	}
+	return true, nil
+}
+
+func generateCode() string {
+	rand.Seed(time.Now().UnixNano())
+	code := rand.Intn(899999) + 100000
+	res := strconv.Itoa(code)
+	return res
 }
 
 func CheckReCaptcha(token string) error {

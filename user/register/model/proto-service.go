@@ -3,14 +3,15 @@ package model
 type User struct {
 	Uid      string `json:"uid"`
 	Username string `json:"username"`
+	Name string `json:"name"`
 	Password string `json:"password"`
+	RepeatPassword string `json:"repeatPassword"`
 	Tel      string `json:"tel"`
 	Email    string `json:"email"`
-	Sex      int32  `json:"sex"`
-	Age      int32  `json:"age"`
-	Address  string `json:"address"`
-	ClassNum int32  `json:"classNum"`
 	Img      string `json:"img"`
+	StuNumber string `json:"stuNumber"`
+	ProblemSolvedNumber int `json:"problemSolvedNumber"`
+	Grade               int    `json:"grade"`
 }
 
 type AddUserRequest struct {
