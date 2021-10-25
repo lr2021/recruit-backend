@@ -16,5 +16,10 @@ var (
 	SMTP_PORT = general.GetStringEnv("SMTP_PORT", "")
 	SMTP_USER = general.GetStringEnv("SMTP_USER", "")
 	SMTP_PASS = general.GetStringEnv("SMTP_PASS", "")
+
+	ALIYUN_ACCESS_KEY_ID = general.GetStringEnv("ALIYUN_ACCESS_KEY_ID", "")
+	ALIYUN_ACCESS_KEY_SECRET = general.GetStringEnv("ALIYUN_ACCESS_KEY_SECRET", "")
+	ALIYUN_REGION = general.GetStringEnv("ALIYUN_REGION", "")
+
 )
 
