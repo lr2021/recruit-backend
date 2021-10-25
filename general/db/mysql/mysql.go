@@ -3,6 +3,7 @@ package mysql
 import (
 	"database/sql"
 	"fmt"
+	"github.com/lr2021/recruit-backend/general/config"
 	"log"
 	"sync"
 	"time"
@@ -28,7 +29,9 @@ func Init() {
 		return
 	}
 
-	db, err = sql.Open("mysql", "lrstudio:tF#262420228@tcp(127.0.0.1:3306)/lrstudio?charset=utf8")
+	dataSource := fmt.Sprintf("%v:%v@tcp(%v)/%v?charset=utf8", config.MYSQL_USERNAME, config.MYSQL_PASSWORD,
+		config.MYSQL_ADDR, config.MYSQL_DBNAME)
+	db, err = sql.Open("mysql", dataSource)
 	if err != nil {
 		log.Println(err.Error())
 		return
