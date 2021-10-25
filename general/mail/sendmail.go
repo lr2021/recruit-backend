@@ -7,7 +7,12 @@ import (
 	"time"
 )
 
-var MsgChan = make(chan *gomail.Message, 20)
+type SendMail struct {
+	Msg *gomail.Message
+	Goal chan int
+}
+
+var ch = make(chan SendMail, 20)
 
 func Init() {
 	go func() {
@@ -18,8 +23,9 @@ func Init() {
 		open := false
 		for {
 			select {
-			case m, ok := <-MsgChan:
+			case m, ok := <-ch:
 				if !ok {
+					m.Goal <- -1
 					return
 				}
 				if !open {
@@ -40,9 +46,11 @@ func Init() {
 						panic(err)
 					}
 				}
-				if err := gomail.Send(s, m); err != nil {
+				if err := gomail.Send(s, m.Msg); err != nil {
+					m.Goal <- -1
 					log.Print(err)
 				}
+				m.Goal <- 0
 			// Close the connection to the SMTP server if no email was sent in
 			// the last 30 seconds.
 			case <-time.After(30 * time.Second):
@@ -56,5 +64,10 @@ func Init() {
 		}
 	}()
 
-	close(MsgChan)
+	close(ch)
 }
+
+func GetChan() chan SendMail {
+	return ch
+}
+
