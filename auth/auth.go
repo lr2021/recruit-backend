@@ -4,9 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/go-redis/redis/v7"
 	"github.com/lr2021/recruit-backend/general"
 	"github.com/lr2021/recruit-backend/general/config"
+	"github.com/lr2021/recruit-backend/general/db/cache"
 	"github.com/lr2021/recruit-backend/general/errors"
+	
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -18,12 +21,12 @@ type CustomClaims struct {
 	jwt.StandardClaims
 }
 
-func CheckValidation(code string, tel string, username string) bool {
+func CheckValidation(code string, goal string, username string) bool {
 
 	return true
 }
 
-func GenerateValidation(tel string, username string) (bool, error) {
+func GenerateValidation(goal string, username string, flag int) (bool, error) {
 
 	return false, nil
 }
@@ -70,7 +73,7 @@ func GenerateToken(username string) string {
 		fmt.Println(err)
 	}
 	fmt.Printf("token: %v\n", token)
-
+	cache.GetRDB().Set(username, token, time.Duration(maxAge) * time.Second)
 	return token
 }
 
@@ -89,4 +92,30 @@ func ParseToken(tokenString string) (*CustomClaims, error) {
 	} else {
 		return nil, err
 	}
+}
+
+func RemoveToken(username string) error {
+	token, err := cache.GetRDB().Get(username).Result()
+	if err != nil {
+		if err == redis.Nil {
+			return errors.Forbidden("auth:002", "cannot find token")
+		} else {
+			return err
+		}
+	}
+	claims, err := ParseToken(token)
+	if err != nil {
+		return err
+	}
+	if claims.UserID == username {
+		result, err := cache.GetRDB().Del(username).Result()
+		if err != nil {
+			return err
+		}
+		if result == 1 {
+			return nil
+		}
+		return errors.InternalServerError("auth:999", "remote auth server response error")
+	}
+	return errors.Forbidden("auth:001", "invalid token")
 }
