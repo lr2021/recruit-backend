@@ -7,12 +7,12 @@ import (
 	"time"
 )
 
-type SendMail struct {
+type sendMail struct {
 	Msg *gomail.Message
 	Goal chan int
 }
 
-var ch = make(chan SendMail, 20)
+var ch = make(chan sendMail, 20)
 
 func Init() {
 	go func() {
@@ -67,7 +67,16 @@ func Init() {
 	close(ch)
 }
 
-func GetChan() chan SendMail {
-	return ch
+func Send(m *gomail.Message) (bool, error) {
+	statusChan := make(chan int)
+	ch <- sendMail{
+		Msg:  m,
+		Goal: statusChan,
+	}
+	status := <-statusChan
+	if status == -1 {
+		return false, nil
+	}
+	return true, nil
 }
 
